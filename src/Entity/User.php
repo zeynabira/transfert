@@ -3,9 +3,11 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
+ * @ApiResource()
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  */
 class User implements UserInterface
@@ -28,20 +30,9 @@ class User implements UserInterface
     private $roles = [];
 
     /**
-     * @var string The hashed password
-     * @ORM\Column(type="string")
-     */
-    private $password;
-
-    /**
      * @ORM\Column(type="string", length=255)
      */
     private $nom_complet;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $confpwd;
 
     /**
      * @ORM\Column(type="boolean")
@@ -83,8 +74,7 @@ class User implements UserInterface
     {
         $roles = $this->roles;
         // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
-
+       
         return array_unique($roles);
     }
 
@@ -135,18 +125,6 @@ class User implements UserInterface
     public function setNomComplet(string $nom_complet): self
     {
         $this->nom_complet = $nom_complet;
-
-        return $this;
-    }
-
-    public function getConfpwd(): ?string
-    {
-        return $this->confpwd;
-    }
-
-    public function setConfpwd(string $confpwd): self
-    {
-        $this->confpwd = $confpwd;
 
         return $this;
     }

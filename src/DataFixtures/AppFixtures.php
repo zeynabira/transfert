@@ -21,16 +21,16 @@ class AppFixtures extends Fixture
     public function load(ObjectManager $manager)
     {
         $role = new Role();
-        $role->setLibelle("Role AdSyst"); 
+        $role->setLibelle("ADMIN_SYST"); 
         $manager->persist($role);
-        $user = new User("adminsyst");
+        $user = new User();
         $user->setUsername("Zeyna");     
         $user->setNomComplet("Zeynab Sarr");
         $user->setPassword($this->encoder->encodePassword($user, "zeyna"));
-        $user->setConfPwd("zeyna");
-        $user->setRole($role);
-        $user->setIsActif("true");
-        $user->setRoles(json_encode(array("ROLE_ADMIN")));
+        $user->setRole($role
+    );
+        $user->setIsActif(true);
+        $user->setRoles(array("ROLE_".$role->getLibelle()));
         $manager->persist($user);
         $manager->flush();
     }
