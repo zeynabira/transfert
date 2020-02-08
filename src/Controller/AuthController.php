@@ -20,11 +20,11 @@ class AuthController extends AbstractController
         $manager = $this->getDoctrine()->getManager();
 
 
-        $username = $request->request->get('username');
-        $password = $request->request->get('password');
+        $user = $request->request->get('username');
+        $user = $request->request->get('password');
         $roles = $request->request->get('roles');
-        $nom_complet = $request->request->get('nom_complet');
-        $isActif = $request->request->get('isActif');
+        $user = $request->request->get('nom_complet');
+        $user = $request->request->get('isActif');
         $role = $request->request->get('role');
         
         if ($roles) {
@@ -35,9 +35,11 @@ class AuthController extends AbstractController
         $user = new User();
         $user->setUsername("Zeyna");     
         $user->setNomComplet("Zeynab Sarr");
-        $user->setPassword($this->encoder->encodePassword($user, $password));
-        $user->setIsActif("true");
-        $user->setRoles("ROLE_ADMIN");
+        $user->setPassword($this->encoder->encodePassword($user, "zeyna"));
+        $user->setRole($role
+    );
+        $user->setIsActif(true);
+        $user->setRoles(array("ROLE_".$role->getLibelle()));
        
         $manager->persist($user);
         $manager->flush();

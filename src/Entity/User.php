@@ -30,7 +30,14 @@ class User implements UserInterface
     private $roles = [];
 
     /**
+     * @var string The hashed password
+     * @ORM\Column(type="string")
+     */
+    private $password;
+
+    /**
      * @ORM\Column(type="string", length=255)
+     * 
      */
     private $nom_complet;
 
