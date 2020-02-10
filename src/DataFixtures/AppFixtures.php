@@ -21,8 +21,17 @@ class AppFixtures extends Fixture
     public function load(ObjectManager $manager)
     {
         $role = new Role();
-        $role->setLibelle("ADMIN_SYST"); 
+        $role->setLibelle("ROLE_ADMIN_SYST"); 
         $manager->persist($role);
+
+        $role1 = new Role();
+        $role1->setLibelle("ROLE_ADMIN"); 
+        $manager->persist($role1);
+
+        $role2 = new Role();
+        $role2->setLibelle("ROLE_CAISSIER"); 
+        $manager->persist($role2);
+
         $user = new User();
         $user->setUsername("Zeyna");     
         $user->setNomComplet("Zeynab Sarr");
@@ -30,7 +39,7 @@ class AppFixtures extends Fixture
         $user->setRole($role
     );
         $user->setIsActif(true);
-        $user->setRoles(array("ROLE_".$role->getLibelle()));
+        $user->setRoles(array($role->getLibelle()));
         $manager->persist($user);
         $manager->flush();
     }
