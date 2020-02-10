@@ -359,6 +359,11 @@
       <tag name="doctrine.fixture.orm"/>
       <argument type="service" id="security.user_password_encoder.generic"/>
     </service>
+    <service id="App\DataPersister\UserDataPersister" class="App\DataPersister\UserDataPersister" autowire="true" autoconfigure="true">
+      <tag name="api_platform.data_persister"/>
+      <argument type="service" id="doctrine.orm.default_entity_manager"/>
+      <argument type="service" id="security.user_password_encoder.generic"/>
+    </service>
     <service id="App\Repository\RoleRepository" class="App\Repository\RoleRepository" autowire="true" autoconfigure="true">
       <tag name="doctrine.repository_service"/>
       <argument type="service" id="doctrine"/>
@@ -4270,6 +4275,8 @@
     <service id=".abstract.instanceof.App\Controller\AuthController" class="App\Controller\AuthController" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Doctrine\Bundle\FixturesBundle\ORMFixtureInterface.0.App\DataFixtures\AppFixtures" class="App\DataFixtures\AppFixtures" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\DataFixtures\AppFixtures" class="App\DataFixtures\AppFixtures" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.ApiPlatform\Core\DataPersister\DataPersisterInterface.0.App\DataPersister\UserDataPersister" class="App\DataPersister\UserDataPersister" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\DataPersister\UserDataPersister" class="App\DataPersister\UserDataPersister" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Repository\RoleRepository" class="App\Repository\RoleRepository" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Repository\RoleRepository" class="App\Repository\RoleRepository" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Repository\UserRepository" class="App\Repository\UserRepository" autowire="true" abstract="true"/>

@@ -10,6 +10,20 @@ return $getExpiry ? PHP_INT_MAX : Hydrator::hydrate(
     null,
     [
         'stdClass' => [
+            'attributes' => [
+                [
+                    'normalization_context' => [
+                        'groups' => [
+                            'user:read',
+                        ],
+                    ],
+                    'denormalization_context' => [
+                        'groups' => [
+                            'user:write',
+                        ],
+                    ],
+                ],
+            ],
             'repositoryClass' => [
                 1 => 'App\\Repository\\UserRepository',
             ],

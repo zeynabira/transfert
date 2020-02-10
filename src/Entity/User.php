@@ -5,9 +5,14 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\SerializedName;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ApiResource()
+ * @ApiResource(
+ *              normalizationContext = {"groups" = {"user:read"}},
+ *              denormalizationContext = {"groups" = {"user:write"}}    
+ * )
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  */
 class User implements UserInterface
@@ -21,11 +26,13 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
+     * @Groups({"user:read","user:write"})
      */
     private $username;
 
     /**
      * @ORM\Column(type="json")
+     * @Groups({"user:read","user:write"})
      */
     private $roles = [];
 
@@ -37,20 +44,33 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
-     * 
+     * @Groups({"user:read","user:write"})
      */
-    private $nom_complet;
+    private $nomComplet;
 
     /**
      * @ORM\Column(type="boolean")
+     * @Groups({"user:read"})
      */
     private $isActif;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Role", inversedBy="users")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"user:read","user:write"})
      */
     private $role;
+
+    /**
+     * @SerializedName("password")
+     * @Groups({"user:read","user:write"})
+     */
+    private $plainPassword;
+
+    public function __construct()
+    {
+        $this->isActif = true;
+    }
 
     public function getId(): ?int
     {
@@ -126,12 +146,12 @@ class User implements UserInterface
 
     public function getNomComplet(): ?string
     {
-        return $this->nom_complet;
+        return $this->nomComplet;
     }
 
-    public function setNomComplet(string $nom_complet): self
+    public function setNomComplet(string $nomComplet): self
     {
-        $this->nom_complet = $nom_complet;
+        $this->nomComplet = $nomComplet;
 
         return $this;
     }
@@ -156,6 +176,18 @@ class User implements UserInterface
     public function setRole(?Role $role): self
     {
         $this->role = $role;
+
+        return $this;
+    }
+
+    public function getPlainPassword(): ?string
+    {
+        return $this->plainPassword;
+    }
+
+    public function setPlainPassword(string $plainPassword): self
+    {
+        $this->plainPassword = $plainPassword;
 
         return $this;
     }
