@@ -176,6 +176,17 @@ class Role extends \App\Entity\Role implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
+    public function setId(int $id): \App\Entity\Role
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setId', [$id]);
+
+        return parent::setId($id);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getId(): ?int
     {
         if ($this->__isInitialized__ === false) {

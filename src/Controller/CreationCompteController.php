@@ -14,16 +14,15 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class CreationCompteController extends AbstractController
 {
-    private $tokenStorage;
+    private $passwordEncoder;
 
-    public function __construct(TokenStorageInterface $tokenStorage, EntityManagerInterface $entityManager, CompteRepository $Compte)
+    public function __construct(UserPasswordEncoderInterface $passwordEncoder)
     {
-        $this->tokenStorage = $tokenStorage;
-        $this->entityManager =$entityManager;
-        
+        $this->passwordEncoder = $passwordEncoder;
     }
 
     /**
@@ -36,39 +35,74 @@ class CreationCompteController extends AbstractController
     public function __invoke(Request $request)
     {
         // ...Recupération des données du partenaire par repo
-        //$partenaireRepository = $this->entityManager->getRepository(Partenaire::class);
-        
-        //$request = new Request();
+
         $json = json_decode($request->getContent(),false);
+
+        $em = $this->getDoctrine()->getManager();
 
         $partenaire = new Partenaire();
         $partenaire->setNINEA($json->partenaire->NINEA);
         $partenaire->setNumRegistre($json->partenaire->NumRegistre);
         $partenaire->setAdress($json->partenaire->adress);
         $partenaire->setEmail($json->partenaire->email);
+        $em->persist($partenaire);
 
-        $role = new Role();
+        $role_id = $json->partenaire->users->role;
+        $repo = $this->getDoctrine()->getRepository(Role::class);
+        $role = $repo->find($role_id);
 
         $user = new User();
         $user->setUsername($json->partenaire->users->username);
         $user->setPartenaire($partenaire);
-        $user->setRole($json->partenaire->users->role);
+        $user->setRole($role);
         $user->setNomComplet($json->partenaire->users->nomComplet);
         $user->setRoles($json->partenaire->users->roles);
-        $user->setPassword($json->partenaire->users->password);
+        $user->setPassword($this->passwordEncoder->encodePassword($user, $json->partenaire->users->password));
+        $em->persist($user);
 
         $depot = new Depot();
         $depot->setMontant($json->depots->montant);
+        $depot->setUser($this->getUser());
+        $em->persist($depot);
 
         $Compte = new Compte();
-        $Compte->setNumCompte($json->NumCompte);
-        $Compte->setSolde($json->Solde);
+        $numero = time();
+        $Compte->setNumCompte($numero);
+        $Compte->setSolde($json->depots->montant);
         $Compte->setPartenaire($partenaire);
-        $Compte->setUser($user);
+
+        $Compte->setUser($this->getUser());
+
         $Compte->addDepot($depot);
 
-        dd($Compte);
+        $em->persist($Compte);
+
+        //dd($Compte);
+
+        $em->flush();
+
         return new JsonResponse($json);
-    
     }
 }
+/**
+ * {
+ * "partenaire":{
+*	  "NINEA": "6546465456",
+*	  "NumRegistre": "RC-45615-2020",
+*	  "adress": "rufisque",
+*	  "email": "parenaire1@partenaire.sn",
+*	  "users": {
+*		  "username": "partenaire1",
+*		  "roles": [
+*		    "ROLE_PARTENAIRE"
+*		  ],
+*		  "nomComplet": "partenaire1",
+*		  "role": 4,
+*		  "password": "partenaire1"
+*		}
+*	},
+* "depots":{
+*	  "montant": 500000
+*	  }
+*}
+ */

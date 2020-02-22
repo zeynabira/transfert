@@ -23,7 +23,7 @@ use ApiPlatform\Core\Annotation\ApiSubresource;
  *                   "delete"={"security"="is_granted('ROLE_ADMIN_SYST')"}
  *               },
  *              normalizationContext = {"groups" = {"user:read"}},
- *              denormalizationContext = {"groups" = {"user:write"}}    
+ *              denormalizationContext = {"groups" = {"user:write"}}
  * )
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  */

@@ -18,9 +18,10 @@ class UserChecker implements UserCheckerInterface
         }
 
         if (!$user->getIsActif())  {
-            throw new DisabledException("Account is disabled.");
-        }  else  {
-            return;
+            throw new DisabledException("....");
+        }elseif ($user->getPartenaire() != null && !$user->getPartenaire()->getIsActive())  {
+           // dd($user->getPartenaire()->getIsActive());
+            throw new DisabledException(".....");
         }
 
         // user is deleted, show a generic Account Not Found message.
@@ -34,6 +35,7 @@ class UserChecker implements UserCheckerInterface
         if (!$user instanceof AppUser) {
             return;
         }
+
 
         // user account is expired, the user may be notified
       /*  if ($user->isExpired()) {

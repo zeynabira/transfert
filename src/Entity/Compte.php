@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiResource;
+use DateTime;
 
 /**
  * @ApiResource(
@@ -57,9 +58,16 @@ class Compte
      */
     private $depots;
 
+    /**
+     * @ORM\Column(type="datetime", nullable=false)
+     */
+    private $createAt;
+
     public function __construct()
     {
         $this->depots = new ArrayCollection();
+        $this->Solde = 0;
+        $this->createAt = new DateTime();
     }
 
     public function getId(): ?int
@@ -142,6 +150,18 @@ class Compte
                 $depot->setComptes(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCreateAt(): ?\DateTimeInterface
+    {
+        return $this->createAt;
+    }
+
+    public function setCreateAt(?\DateTimeInterface $createAt): self
+    {
+        $this->createAt = $createAt;
 
         return $this;
     }

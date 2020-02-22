@@ -3,7 +3,9 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints\Date;
 
 /**
  * @ApiResource()
@@ -24,7 +26,7 @@ class Depot
     private $montant;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="datetime")
      */
     private $DateDepot;
 
@@ -39,6 +41,11 @@ class Depot
      * @ORM\JoinColumn(nullable=false)
      */
     private $Comptes;
+
+    public function __construct()
+    {
+        $this->DateDepot = new DateTime();
+    }
 
     public function getId(): ?int
     {
@@ -57,12 +64,12 @@ class Depot
         return $this;
     }
 
-    public function getDateDepot(): ?string
+    public function getDateDepot(): ?DateTime
     {
         return $this->DateDepot;
     }
 
-    public function setDateDepot(string $DateDepot): self
+    public function setDateDepot(DateTime $DateDepot): self
     {
         $this->DateDepot = $DateDepot;
 

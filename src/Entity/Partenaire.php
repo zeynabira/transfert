@@ -50,10 +50,16 @@ class Partenaire
      */
     private $users;
 
+    /**
+     * @ORM\Column(type="boolean", nullable=false)
+     */
+    private $isActive;
+
     public function __construct()
     {
         $this->Compte = new ArrayCollection();
         $this->users = new ArrayCollection();
+        $this->isActive = true;
     }
 
     public function getId(): ?int
@@ -167,6 +173,18 @@ class Partenaire
                 $user->setPartenaire(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getIsActive(): ?bool
+    {
+        return $this->isActive;
+    }
+
+    public function setIsActive(?bool $isActive): self
+    {
+        $this->isActive = $isActive;
 
         return $this;
     }
