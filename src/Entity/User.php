@@ -2,14 +2,26 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\SerializedName;
 use Symfony\Component\Serializer\Annotation\Groups;
+use ApiPlatform\Core\Annotation\ApiSubresource;
 
 /**
  * @ApiResource(
+ *              collectionOperations={
+ *                   "get"={"security"="is_granted('ROLE_ADMIN')"},
+ *                   "post"={"security"="is_granted('ROLE_ADMIN')"}
+ *              },
+ *              itemOperations={
+ *                   "get"={"security"="is_granted('USER_VIEW',object)"},
+ *                   "put"={"security"="is_granted('USER_EDIT',object)"},
+ *                   "delete"={"security"="is_granted('ROLE_ADMIN_SYST')"}
+ *               },
  *              normalizationContext = {"groups" = {"user:read"}},
  *              denormalizationContext = {"groups" = {"user:write"}}    
  * )
@@ -58,18 +70,36 @@ class User implements UserInterface
      * @ORM\ManyToOne(targetEntity="App\Entity\Role", inversedBy="users")
      * @ORM\JoinColumn(nullable=false)
      * @Groups({"user:read","user:write"})
+     * @ApiSubresource()
      */
     private $role;
 
     /**
      * @SerializedName("password")
-     * @Groups({"user:read","user:write"})
+     * @Groups({"user:write"})
      */
     private $plainPassword;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Depot", mappedBy="user")
+     */
+    private $Depots;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Compte", mappedBy="user")
+     */
+    private $Comptes;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Partenaire", inversedBy="users")
+     */
+    private $partenaire;
 
     public function __construct()
     {
         $this->isActif = true;
+        $this->Depots = new ArrayCollection();
+        $this->Comptes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -188,6 +218,80 @@ class User implements UserInterface
     public function setPlainPassword(string $plainPassword): self
     {
         $this->plainPassword = $plainPassword;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Depots[]
+     */
+    public function getDepots(): Collection
+    {
+        return $this->Depots;
+    }
+
+    public function addDepots(Depot $depots): self
+    {
+        if (!$this->Depots->contains($depots)) {
+            $this->Depots[] = $depots;
+            $depots->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDepots(Depot $depots): self
+    {
+        if ($this->Depots->contains($depots)) {
+            $this->Depots->removeElement($depots);
+            // set the owning side to null (unless already changed)
+            if ($depots->getUser() === $this) {
+                $depots->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Comptes[]
+     */
+    public function getComptes(): Collection
+    {
+        return $this->Comptes;
+    }
+
+    public function addComptes(Compte $comptes): self
+    {
+        if (!$this->Comptes->contains($comptes)) {
+            $this->Comptes[] = $comptes;
+            $comptes->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComptes(Compte $comptes): self
+    {
+        if ($this->Comptes->contains($comptes)) {
+            $this->Comptes->removeElement($comptes);
+            // set the owning side to null (unless already changed)
+            if ($comptes->getUser() === $this) {
+                $comptes->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getPartenaire(): ?Partenaire
+    {
+        return $this->partenaire;
+    }
+
+    public function setPartenaire(?Partenaire $partenaire): self
+    {
+        $this->partenaire = $partenaire;
 
         return $this;
     }

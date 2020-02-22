@@ -32,6 +32,20 @@ class AppFixtures extends Fixture
         $role2->setLibelle("ROLE_CAISSIER"); 
         $manager->persist($role2);
 
+        $role3 = new Role();
+        $role3->setLibelle("ROLE_PARTENAIRE"); 
+        $manager->persist($role3);
+
+        $role4 = new Role();
+        $role4->setLibelle("ROLE_ADMIN_PART"); 
+        $manager->persist($role4);
+
+        $role5 = new Role();
+        $role5->setLibelle("ROLE_CAISSIER_PART"); 
+        $manager->persist($role5);
+
+
+
         $user = new User();
         $user->setUsername("Zeyna");     
         $user->setNomComplet("Zeynab Sarr");

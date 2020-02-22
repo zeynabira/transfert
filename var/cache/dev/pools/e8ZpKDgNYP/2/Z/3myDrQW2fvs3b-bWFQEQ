@@ -10,6 +10,29 @@ return $getExpiry ? PHP_INT_MAX : Hydrator::hydrate(
     null,
     [
         'stdClass' => [
+            'collectionOperations' => [
+                [
+                    'get' => [
+                        'security' => 'is_granted(\'ROLE_ADMIN\')',
+                    ],
+                    'post' => [
+                        'security' => 'is_granted(\'ROLE_ADMIN\')',
+                    ],
+                ],
+            ],
+            'itemOperations' => [
+                [
+                    'get' => [
+                        'security' => 'is_granted(\'USER_VIEW\',object)',
+                    ],
+                    'put' => [
+                        'security' => 'is_granted(\'USER_EDIT\',object)',
+                    ],
+                    'delete' => [
+                        'security' => 'is_granted(\'ROLE_ADMIN_SYST\')',
+                    ],
+                ],
+            ],
             'attributes' => [
                 [
                     'normalization_context' => [
